@@ -4,7 +4,7 @@
     {
         Eu,
         Kr,
-        Sea,
+        Cn,
         Tw,
         Us
     }

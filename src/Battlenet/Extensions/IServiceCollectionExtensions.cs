@@ -2,10 +2,9 @@
 using System.Net.Http.Headers;
 using System.Text;
 
-using ASoft.BattleNet.Starcraft2;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASoft.BattleNet.Extensions
 {
@@ -15,12 +14,16 @@ namespace ASoft.BattleNet.Extensions
         {
             var battlenetClientOption = configuration.Get<BattleNetClientOption>();
 
-            serviceCollection.AddHttpClient(battlenetClientOption.ApiClientName, client =>
+            // IOptions needs parameterless ctor as of now as we need to allow null values ... :-/
+            _ = battlenetClientOption.ClientId ?? throw new ArgumentNullException(nameof(battlenetClientOption.ClientId));
+            _ = battlenetClientOption.Secret ?? throw new ArgumentNullException(nameof(battlenetClientOption.Secret));
+
+            serviceCollection.AddHttpClient(BattleNetClient.BlizzardClientName, client =>
             {
                 client.BaseAddress = new Uri($"https://{battlenetClientOption.Region}.api.blizzard.com");
             });
 
-            serviceCollection.AddHttpClient(battlenetClientOption.OAuthClientName, client =>
+            serviceCollection.AddHttpClient(BattleNetClient.BattlenetClientName, client =>
             {
                 var credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes($"{battlenetClientOption.ClientId}:{battlenetClientOption.Secret}"));
 
@@ -28,7 +31,7 @@ namespace ASoft.BattleNet.Extensions
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
             });
 
-            serviceCollection.AddSingleton<IStarcraft2Client, Starcraft2Client>();
+            serviceCollection.AddSingleton((sp) => Options.Create(battlenetClientOption));
             return serviceCollection.AddSingleton<IBattleNetClient, BattleNetClient>();
         }
     }

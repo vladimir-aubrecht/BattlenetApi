@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 
+using ASoft.BattleNet;
 using ASoft.BattleNet.Extensions;
-using ASoft.BattleNet.Starcraft2;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,18 +11,20 @@ namespace ASoft.Battlenet.CLI
 {
     class Program
     {
-        private readonly IStarcraft2Client starcraft2Client;
+        private readonly IBattleNetClient battlenetClient;
         private readonly ILogger<Program> logger;
 
-        public Program(IStarcraft2Client starcraft2Client, ILogger<Program> logger)
+        public Program(IBattleNetClient battlenetClient, ILogger<Program> logger)
         {
-            this.starcraft2Client = starcraft2Client;
+            this.battlenetClient = battlenetClient;
             this.logger = logger;
         }
 
         public async Task RunAsync()
         {
-            var achievements = await this.starcraft2Client.GetAchievementsAsync("2");
+            var user = await this.battlenetClient.GetUser();
+            var player = await this.battlenetClient.GetPlayer(user.Id);
+            var achievements = await this.battlenetClient.GetAchievementsAsync("2");
             //this.logger.LogDebug("{0}", achievements[0]);
         }
 
