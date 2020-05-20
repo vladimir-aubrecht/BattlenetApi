@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace ASoft.BattleNet.Models.Battlenet
+namespace ASoft.BattleNet.Battlenet.Models
 {
     [DebuggerDisplay("AccessToken: {AccessToken}")]
     internal class OAuthToken

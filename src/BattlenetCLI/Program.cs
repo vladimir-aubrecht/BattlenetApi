@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 using ASoft.BattleNet;
+using ASoft.BattleNet.Battlenet.Extensions;
 using ASoft.BattleNet.Extensions;
 
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,9 @@ namespace ASoft.Battlenet.CLI
         {
             var user = await this.battlenetClient.GetUser();
             var player = await this.battlenetClient.GetPlayer(user.Id);
-            var achievements = await this.battlenetClient.GetAchievementsAsync("2");
+            var regionId = player[0].RegionId;
+            //var achievements = await this.battlenetClient.GetAchievementsAsync(regionId);
+            var grandMasterLeaderboard = await this.battlenetClient.GetCurrentSeasonAsync(regionId);
             //this.logger.LogDebug("{0}", achievements[0]);
         }
 

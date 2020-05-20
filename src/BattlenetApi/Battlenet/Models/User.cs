@@ -1,7 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics;
 
-namespace ASoft.BattleNet.Models.Battlenet
+using Newtonsoft.Json;
+
+namespace ASoft.BattleNet.Battlenet.Models
 {
+    [DebuggerDisplay("Id: {Id} BattleTag: {BattleTag}")]
     public class User
     {
         public User(string sub, ulong id, string battleTag)

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 
 using Newtonsoft.Json;
 
-namespace ASoft.BattleNet.Models.Starcraft2
+namespace ASoft.BattleNet.Starcraft2.Models
 {
+    [DebuggerDisplay("Url: {Url}")]
     public class Icon
     {
         public Icon(int x, int y, int width, int height, int offset, Uri url)

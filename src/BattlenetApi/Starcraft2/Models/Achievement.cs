@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace ASoft.BattleNet.Models.Starcraft2
+namespace ASoft.BattleNet.Starcraft2.Models
 {
     [DebuggerDisplay("{Title}")]
     public class Achievement

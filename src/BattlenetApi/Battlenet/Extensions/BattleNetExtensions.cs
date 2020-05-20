@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-using ASoft.BattleNet.Models.Battlenet;
+using ASoft.BattleNet.Battlenet.Models;
 
-namespace ASoft.BattleNet.Extensions
+namespace ASoft.BattleNet.Battlenet.Extensions
 {
     public static class BattleNetExtensions
     {

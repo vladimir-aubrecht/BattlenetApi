@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleNet", "src\Battlenet\BattleNet.csproj", "{D0105038-2601-4487-A3AE-2457BDFC045A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleNetApi", "src\BattlenetApi\BattleNetApi.csproj", "{D0105038-2601-4487-A3AE-2457BDFC045A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AFDFED57-7561-444F-94DA-16838B0AA3FA}"
 EndProject

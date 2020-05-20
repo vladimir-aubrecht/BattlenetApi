@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-using ASoft.BattleNet.Models.Battlenet;
+using ASoft.BattleNet.Battlenet.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -22,6 +22,9 @@ namespace ASoft.BattleNet
         private readonly IOptions<BattleNetClientOption> options;
         private readonly ILogger<BattleNetClient> logger;
 
+        private OAuthToken s2sToken;
+        private OAuthToken userToken;
+
         public BattleNetClient(IHttpClientFactory httpClientFactory, IOptions<BattleNetClientOption> options) : this(httpClientFactory, options, NullLogger<BattleNetClient>.Instance)
         {
         }
@@ -38,12 +41,21 @@ namespace ASoft.BattleNet
             var trimmedEndpoint = endpoint.Trim('/');
             logger.LogInformation("Making HTTP request to: {trimmedEndpoint}", trimmedEndpoint);
 
-            //var oAuth = await AuthenticateS2SAsync().ConfigureAwait(false);
-            //var oAuth = await AuthenticateUserAsync("EUSKPBHF2SFUAVKK33HVPYGPWXR2IXMDHM").ConfigureAwait(false);
-
             var message = new HttpRequestMessage(HttpMethod.Get, trimmedEndpoint);
-            message.Headers.Authorization = new AuthenticationHeaderValue(scheme, token);
+            message.Headers.Authorization = new AuthenticationHeaderValue(userToken.TokenType, userToken.AccessToken);
             return await MakeRequestAsync<TResponseModel>(clientName, message).ConfigureAwait(false);
+        }
+
+        public async Task AuthenticateByAuthorizationCodeAsync(string authorizationCode)
+        {
+            this.s2sToken = await AuthenticateS2SAsync().ConfigureAwait(false);
+            this.userToken = await AuthenticateUserAsync(authorizationCode).ConfigureAwait(false);
+        }
+
+        public async Task AuthenticateByAuthorizationFlowAccessTokenAsync(string accessToken)
+        {
+            this.s2sToken = await AuthenticateS2SAsync().ConfigureAwait(false);
+            this.userToken = new OAuthToken(accessToken, "Bearer", long.MaxValue, null, null);
         }
 
         private async Task<OAuthToken> AuthenticateS2SAsync()

@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Battlenet\BattleNet.csproj" />
+    <ProjectReference Include="..\BattlenetApi\BattleNetApi.csproj" />
   </ItemGroup>
 
 </Project>
