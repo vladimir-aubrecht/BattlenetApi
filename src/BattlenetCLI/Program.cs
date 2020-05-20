@@ -26,8 +26,9 @@ namespace ASoft.Battlenet.CLI
             var user = await this.battlenetClient.GetUser();
             var player = await this.battlenetClient.GetPlayer(user.Id);
             var regionId = player[0].RegionId;
+            var realmId = player[0].RealmId;
             //var achievements = await this.battlenetClient.GetAchievementsAsync(regionId);
-            var grandMasterLeaderboard = await this.battlenetClient.GetCurrentSeasonAsync(regionId);
+            var x = await this.battlenetClient.GetStatic(regionId);
             //this.logger.LogDebug("{0}", achievements[0]);
         }
 
