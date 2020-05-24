@@ -7,7 +7,6 @@ using ASoft.BattleNet.Battlenet.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
@@ -19,66 +18,74 @@ namespace ASoft.BattleNet
         public const string BlizzardClientName = "BlizzardClient";
 
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IOptions<BattleNetClientOption> options;
         private readonly ILogger<BattleNetClient> logger;
 
-        private OAuthToken s2sToken;
-        private OAuthToken userToken;
-
-        public BattleNetClient(IHttpClientFactory httpClientFactory, IOptions<BattleNetClientOption> options) : this(httpClientFactory, options, NullLogger<BattleNetClient>.Instance)
+        public BattleNetClient(IHttpClientFactory httpClientFactory) : this(httpClientFactory, NullLogger<BattleNetClient>.Instance)
         {
         }
 
-        public BattleNetClient(IHttpClientFactory httpClientFactory, IOptions<BattleNetClientOption> options, ILogger<BattleNetClient> logger)
+        public BattleNetClient(IHttpClientFactory httpClientFactory, ILogger<BattleNetClient> logger)
         {
             this.httpClientFactory = httpClientFactory;
-            this.options = options;
             this.logger = logger;
         }
 
-        public async Task<TResponseModel> QueryBlizzardApiAsync<TResponseModel>(string clientName, string endpoint)
+        public async Task<TResponseModel> QueryBlizzardApiAsync<TResponseModel>(string endpoint, OAuthToken authToken)
         {
             var trimmedEndpoint = endpoint.Trim('/');
             logger.LogInformation("Making HTTP request to: {trimmedEndpoint}", trimmedEndpoint);
 
             var message = new HttpRequestMessage(HttpMethod.Get, trimmedEndpoint);
-            message.Headers.Authorization = new AuthenticationHeaderValue(userToken.TokenType, userToken.AccessToken);
-            return await MakeRequestAsync<TResponseModel>(clientName, message).ConfigureAwait(false);
+
+            if (authToken != null)
+            {
+                message.Headers.Authorization = new AuthenticationHeaderValue(authToken.TokenType, authToken.AccessToken);
+            }
+
+            return await MakeRequestAsync<TResponseModel>(BlizzardClientName, message, null).ConfigureAwait(false);
         }
 
-        public async Task AuthenticateByAuthorizationCodeAsync(string authorizationCode)
+        public async Task<TResponseModel> QueryBattleNetApiAsync<TResponseModel>(HttpMethod httpMethod, string endpoint, string? payload, string? cookies, OAuthToken? authToken)
         {
-            this.s2sToken = await AuthenticateS2SAsync().ConfigureAwait(false);
-            this.userToken = await AuthenticateUserAsync(authorizationCode).ConfigureAwait(false);
+            var trimmedEndpoint = endpoint.Trim('/');
+            logger.LogInformation("Making HTTP request to: {trimmedEndpoint}", trimmedEndpoint);
+
+            var message = new HttpRequestMessage(httpMethod, trimmedEndpoint);
+
+            if (payload != null)
+            {
+                message.Content = new StringContent(payload, Encoding.ASCII, "application/x-www-form-urlencoded");
+            }
+
+            if (authToken != null)
+            {
+                message.Headers.Authorization = new AuthenticationHeaderValue(authToken.TokenType, authToken.AccessToken);
+            }
+
+            return await MakeRequestAsync<TResponseModel>(BattlenetClientName, message, cookies).ConfigureAwait(false);
         }
 
-        public async Task AuthenticateByAuthorizationFlowAccessTokenAsync(string accessToken)
-        {
-            this.s2sToken = await AuthenticateS2SAsync().ConfigureAwait(false);
-            this.userToken = new OAuthToken(accessToken, "Bearer", long.MaxValue, null, null);
-        }
-
-        private async Task<OAuthToken> AuthenticateS2SAsync()
-        {
-            var message = new HttpRequestMessage(HttpMethod.Post, "/oauth/token") { Content = new StringContent("grant_type=client_credentials&scope=openid wow.profile d3.profile sc2.profile", Encoding.ASCII, "application/x-www-form-urlencoded") };
-            return await MakeRequestAsync<OAuthToken>(BattlenetClientName, message).ConfigureAwait(false);
-        }
-
-        private async Task<OAuthToken> AuthenticateUserAsync(string code)
-        {
-            var clientId = this.options.Value.ClientId;
-            var secret = this.options.Value.Secret;
-            var redirectUri = "https://localhost";
-            var message = new HttpRequestMessage(HttpMethod.Post, "/oauth/token") { Content = new StringContent($"code={code}&client_id={clientId}&client_secret={secret}&redirect_uri={redirectUri}&grant_type=authorization_code&scope=openid wow.profile d3.profile sc2.profile", Encoding.ASCII, "application/x-www-form-urlencoded") };
-            return await MakeRequestAsync<OAuthToken>(BattlenetClientName, message).ConfigureAwait(false);
-        }
-
-        private async Task<TResponse> MakeRequestAsync<TResponse>(string httpClientName, HttpRequestMessage message)
+        internal async Task<TResponse> MakeRequestAsync<TResponse>(string httpClientName, HttpRequestMessage message, string? cookies)
         {
             var httpClient = httpClientFactory.CreateClient(httpClientName);
 
+            if (cookies != null)
+            {
+                httpClient.DefaultRequestHeaders.Add("Cookie", cookies);
+            }
+
             var result = await httpClient.SendAsync(message).ConfigureAwait(false);
             logger.LogInformation("Response status code: {statusCode}", result.StatusCode);
+
+            //if (result.StatusCode == System.Net.HttpStatusCode.Redirect)
+            //{
+            //    var newMessage = new HttpRequestMessage(message.Method, result.Headers.Location);
+            //    string newCookies = cookies + "; " + String.Join(';', result.Headers.GetValues("Set-Cookie"));
+
+            //    return await MakeRequestAsync<TResponse>(httpClientName, newMessage, newCookies);
+            //}
+
+            result.EnsureSuccessStatusCode();
 
             var resultContent = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResponse>(resultContent);

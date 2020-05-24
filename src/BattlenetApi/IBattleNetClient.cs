@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
+
+using ASoft.BattleNet.Battlenet.Models;
 
 namespace ASoft.BattleNet
 {
     public interface IBattleNetClient
     {
-        Task AuthenticateByAuthorizationCodeAsync(string authorizationCode);
+        Task<TResponseModel> QueryBlizzardApiAsync<TResponseModel>(string endpoint, OAuthToken authToken);
 
-        Task AuthenticateByAuthorizationFlowAccessTokenAsync(string accessToken);
-        Task<TResponseModel> QueryBlizzardApiAsync<TResponseModel>(string clientName, string endpoint);
+        Task<TResponseModel> QueryBattleNetApiAsync<TResponseModel>(HttpMethod httpMethod, string endpoint, string? payload, string? cookies, OAuthToken? authToken);
     }
 }

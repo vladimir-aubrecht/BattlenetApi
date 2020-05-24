@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -29,6 +30,14 @@ namespace ASoft.BattleNet.Extensions
 
                 client.BaseAddress = new Uri($"https://{battlenetClientOption.Region}.battle.net");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+            }).ConfigurePrimaryHttpMessageHandler((handler) =>
+            {
+                return new HttpClientHandler()
+                {
+                    AllowAutoRedirect = true,
+                    MaxAutomaticRedirections = 20,
+                    UseCookies = false
+                };
             });
 
             serviceCollection.AddSingleton((sp) => Options.Create(battlenetClientOption));
