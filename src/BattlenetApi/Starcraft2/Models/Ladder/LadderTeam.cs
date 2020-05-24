@@ -3,12 +3,13 @@ using System.Diagnostics;
 
 using Newtonsoft.Json;
 
-namespace ASoft.BattleNet.Starcraft2.Models
+namespace ASoft.BattleNet.Starcraft2.Models.Ladder
 {
     [DebuggerDisplay("TeamMembers: {TeamMembers} Mmr: {Mmr}")]
-    public class LadderTeam
+    public sealed class LadderTeam
     {
-        public LadderTeam(IList<TeamMember> teamMembers, int previousRank, int points, int wins, int losses, int mmr, long joinTimestamp)
+        [JsonConstructor]
+        public LadderTeam(IList<LadderTeamMember> teamMembers, int previousRank, int points, int wins, int losses, int mmr, long joinTimestamp)
         {
             TeamMembers = teamMembers;
             PreviousRank = previousRank;
@@ -19,25 +20,12 @@ namespace ASoft.BattleNet.Starcraft2.Models
             JoinTimestamp = joinTimestamp;
         }
 
-        [JsonProperty("teamMembers")]
-        public IList<TeamMember> TeamMembers { get; }
-
-        [JsonProperty("previousRank")]
+        public IList<LadderTeamMember> TeamMembers { get; }
         public int PreviousRank { get; }
-
-        [JsonProperty("points")]
         public int Points { get; }
-
-        [JsonProperty("wins")]
         public int Wins { get; }
-
-        [JsonProperty("losses")]
         public int Losses { get; }
-
-        [JsonProperty("mmr")]
         public int Mmr { get; }
-
-        [JsonProperty("joinTimestamp")]
         public long JoinTimestamp { get; }
     }
 }

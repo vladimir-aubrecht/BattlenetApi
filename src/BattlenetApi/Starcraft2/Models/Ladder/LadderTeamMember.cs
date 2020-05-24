@@ -2,12 +2,13 @@
 
 using Newtonsoft.Json;
 
-namespace ASoft.BattleNet.Starcraft2.Models
+namespace ASoft.BattleNet.Starcraft2.Models.Ladder
 {
     [DebuggerDisplay("Id: {Id} DisplayName: {DisplayName} ClanTag: {ClanTag}")]
-    public class TeamMember
+    public sealed class LadderTeamMember
     {
-        public TeamMember(long id, int realm, int region, string displayName, string clanTag, string favoriteRace)
+        [JsonConstructor]
+        public LadderTeamMember(long id, int realm, int region, string displayName, string clanTag, string favoriteRace)
         {
             Id = id;
             Realm = realm;
@@ -17,22 +18,11 @@ namespace ASoft.BattleNet.Starcraft2.Models
             FavoriteRace = favoriteRace;
         }
 
-        [JsonProperty("id")]
         public long Id { get; }
-
-        [JsonProperty("realm")]
         public int Realm { get; }
-
-        [JsonProperty("region")]
         public int Region { get; }
-
-        [JsonProperty("displayName")]
         public string DisplayName { get; }
-
-        [JsonProperty("clanTag")]
         public string ClanTag { get; }
-
-        [JsonProperty("favoriteRace")]
         public string FavoriteRace { get; }
     }
 }

@@ -23,12 +23,27 @@ namespace ASoft.Battlenet.CLI
 
         public async Task RunAsync()
         {
+            //await this.battlenetClient.AuthenticateByAuthorizationCodeAsync("xxx");
+            await this.battlenetClient.AuthenticateByAuthorizationFlowAccessTokenAsync("xxx");
             var user = await this.battlenetClient.GetUser();
-            var player = await this.battlenetClient.GetPlayer(user.Id);
-            var regionId = player[0].RegionId;
-            var realmId = player[0].RealmId;
-            //var achievements = await this.battlenetClient.GetAchievementsAsync(regionId);
-            var x = await this.battlenetClient.GetStatic(regionId);
+            var players = await this.battlenetClient.GetPlayers(user.Id);
+            var playerIndex = 1;
+            var regionId = players[playerIndex].RegionId;
+            var realmId = players[playerIndex].RealmId;
+            var profileId = players[playerIndex].ProfileId;
+
+            //var grandmasterLeaderboard = await this.battlenetClient.GetGrandmasterLeaderBoardAsync(regionId);
+            //var achievements = await this.battlenetClient.GetLegacyAchievementsAsync(regionId);
+            //var @static = await this.battlenetClient.GetStatic(regionId);
+            //var metadata = await this.battlenetClient.GetPlayer(regionId, realmId, profileId);
+            //var profile = await this.battlenetClient.GetProfile(regionId, realmId, profileId);
+            var ladderSummary = await this.battlenetClient.GetLadderSummary(regionId, realmId, profileId);
+            //var ladder = await this.battlenetClient.GetLadder(regionId, realmId, profileId, ladderSummary.AllLadderMemberships[0].LadderId);
+            //var legacyLadder = await this.battlenetClient.GetLegacyLadder(regionId, ladderSummary.AllLadderMemberships[0].LadderId);
+            //var legacyLadders = await this.battlenetClient.GetLegacyLadders(regionId, realmId, profileId);
+            //var legacyProfile = await this.battlenetClient.GetLegacyProfile(regionId, realmId, profileId);
+            //var legacyMatchHistory = await this.battlenetClient.GetLegacyMatchHistory(regionId, realmId, profileId);
+            var legacyRewards = await this.battlenetClient.GetLegacyRewards(regionId);
             //this.logger.LogDebug("{0}", achievements[0]);
         }
 

@@ -1,13 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 using Newtonsoft.Json;
 
 namespace ASoft.BattleNet.Starcraft2.Models
 {
     [DebuggerDisplay("Name: {Name} ProfileId: {ProfileId} RegionId: {RegionId}")]
-    public class Player
+    public sealed class Player
     {
-        public Player(string name, string profileUrl, string avatarUrl, string profileId, int regionId, int realmId)
+        [JsonConstructor]
+        public Player(string name, Uri profileUrl, Uri avatarUrl, long profileId, int regionId, int realmId)
         {
             Name = name;
             ProfileUrl = profileUrl;
@@ -17,17 +19,11 @@ namespace ASoft.BattleNet.Starcraft2.Models
             RealmId = realmId;
         }
 
-        [JsonProperty("name")]
         public string Name { get; }
-        [JsonProperty("profileUrl")]
-        public string ProfileUrl { get; }
-        [JsonProperty("avatarUrl")]
-        public string AvatarUrl { get; }
-        [JsonProperty("profileId")]
-        public string ProfileId { get; }
-        [JsonProperty("regionId")]
+        public Uri ProfileUrl { get; }
+        public Uri AvatarUrl { get; }
+        public long ProfileId { get; }
         public int RegionId { get; }
-        [JsonProperty("realmId")]
         public int RealmId { get; }
     }
 }

@@ -2,20 +2,18 @@
 
 using Newtonsoft.Json;
 
-namespace ASoft.BattleNet.Starcraft2.Models
+namespace ASoft.BattleNet.Starcraft2.Models.Achievements
 {
-    public class AchievementsCollection
+    public sealed class AchievementsRoot
     {
-        public AchievementsCollection(IList<Achievement> achievements, IList<AchievementCategory> categories)
+        [JsonConstructor]
+        public AchievementsRoot(IList<Achievement> achievements, IList<AchievementCategory> categories)
         {
             Achievements = achievements;
             Categories = categories;
         }
 
-        [JsonProperty("achievements")]
         public IList<Achievement> Achievements { get; }
-
-        [JsonProperty("categories")]
         public IList<AchievementCategory> Categories { get; }
     }
 }
