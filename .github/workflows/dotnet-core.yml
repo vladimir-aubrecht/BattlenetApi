@@ -23,6 +23,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: List files
+      run: tree
     - uses: einaregilsson/build-number@v1
       with:
         token: ${{secrets.github_token}}
