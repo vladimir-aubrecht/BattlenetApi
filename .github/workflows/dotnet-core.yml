@@ -29,7 +29,7 @@ jobs:
       with:
         token: ${{secrets.github_token}}
     - name: Pack
-      run: dotnet pack --configuration Release -p:PackageVersion=1.0.0.$BUILD_NUMBER-prerelease BattlenetApi/BattlenetApi/src/BattlenetApi/BattleNetApi.csproj
+      run: dotnet pack --configuration Release -p:PackageVersion=1.0.0.$BUILD_NUMBER-prerelease src/BattlenetApi/BattleNetApi.csproj
     - name: Publish
-      run: dotnet nuget push "BattlenetApi/BattlenetApi/src/BattlenetApi/bin/Release/ASoft.BattleNetApi.1.0.0.$BUILD_NUMBER-prerelease.nupkg" --source nuget.org --api-key ${{ secrets.NuGetAPIKey }}
+      run: dotnet nuget push "src/BattlenetApi/bin/Release/ASoft.BattleNetApi.1.0.0.$BUILD_NUMBER-prerelease.nupkg" --source nuget.org --api-key ${{ secrets.NuGetAPIKey }}
 
