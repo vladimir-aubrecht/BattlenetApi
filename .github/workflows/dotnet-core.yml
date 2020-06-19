@@ -24,7 +24,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: List files
-      run: tree
+      run: powershell ls -Recurse
     - uses: einaregilsson/build-number@v1
       with:
         token: ${{secrets.github_token}}
