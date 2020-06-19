@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8625</WarningsAsErrors>
     <RootNamespace>ASoft.BattleNet</RootNamespace>
+    <AssemblyName>ASoft.BattleNet</AssemblyName>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
