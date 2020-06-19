@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,13 +78,13 @@ namespace ASoft.BattleNet
             var result = await httpClient.SendAsync(message).ConfigureAwait(false);
             logger.LogInformation("Response status code: {statusCode}", result.StatusCode);
 
-            //if (result.StatusCode == System.Net.HttpStatusCode.Redirect)
-            //{
-            //    var newMessage = new HttpRequestMessage(message.Method, result.Headers.Location);
-            //    string newCookies = cookies + "; " + String.Join(';', result.Headers.GetValues("Set-Cookie"));
+            if (result.StatusCode == System.Net.HttpStatusCode.Redirect)
+            {
+                var newMessage = new HttpRequestMessage(message.Method, result.Headers.Location);
+                string newCookies = cookies + "; " + String.Join(';', result.Headers.GetValues("Set-Cookie"));
 
-            //    return await MakeRequestAsync<TResponse>(httpClientName, newMessage, newCookies);
-            //}
+                return await MakeRequestAsync<TResponse>(httpClientName, newMessage, newCookies).ConfigureAwait(false);
+            }
 
             result.EnsureSuccessStatusCode();
 

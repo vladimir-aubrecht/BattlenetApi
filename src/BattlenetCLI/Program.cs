@@ -28,17 +28,15 @@ namespace ASoft.Battlenet.CLI
         {
             var options = this.battleNetClientOption.Value;
 
-            var token = await this.battlenetClient.AuthenticateByAccessTokenAsync("xxxxx");
-
-            var user = await this.battlenetClient.GetUser(token);
-            var players = await this.battlenetClient.GetPlayers(user.Id, token);
+            var user = await this.battlenetClient.GetUser(token).ConfigureAwait(false);
+            var players = await this.battlenetClient.GetPlayers(user.Id, token).ConfigureAwait(false);
             var playerIndex = 1;
             var regionId = players[playerIndex].RegionId;
             var realmId = players[playerIndex].RealmId;
             var profileId = players[playerIndex].ProfileId;
 
-            var grandmasterLeaderboard = await this.battlenetClient.GetGrandmasterLeaderBoardAsync(regionId, token);
-            var season = await this.battlenetClient.GetSeasonAsync(regionId, token);
+            var grandmasterLeaderboard = await this.battlenetClient.GetGrandmasterLeaderBoardAsync(regionId, token).ConfigureAwait(false);
+            var season = await this.battlenetClient.GetSeasonAsync(regionId, token).ConfigureAwait(false);
             //var achievements = await this.battlenetClient.GetLegacyAchievementsAsync(regionId, token);
             //var @static = await this.battlenetClient.GetStatic(regionId, token);
             //var metadata = await this.battlenetClient.GetPlayer(regionId, realmId, profileId, token);
@@ -68,7 +66,7 @@ namespace ASoft.Battlenet.CLI
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var program = serviceProvider.GetRequiredService<Program>();
 
-            await program.RunAsync();
+            await program.RunAsync().ConfigureAwait(false);
         }
     }
 }
