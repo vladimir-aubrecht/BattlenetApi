@@ -1,5 +1,5 @@
 # Goal of library
-Provide simple C# strong typed access to Battlenet API.
+C# library to access Battlenet API.
 
 # Supported APIs
 - Authentication
