@@ -7,26 +7,23 @@ using ASoft.BattleNet.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace ASoft.Battlenet.CLI
 {
     class Program
     {
         private readonly IBattleNetClient battlenetClient;
-        private readonly IOptions<BattleNetClientOption> battleNetClientOption;
         private readonly ILogger<Program> logger;
 
-        public Program(IBattleNetClient battlenetClient, IOptions<BattleNetClientOption> battleNetClientOption, ILogger<Program> logger)
+        public Program(IBattleNetClient battlenetClient, ILogger<Program> logger)
         {
             this.battlenetClient = battlenetClient;
-            this.battleNetClientOption = battleNetClientOption;
             this.logger = logger;
         }
 
         public async Task RunAsync()
         {
-            var options = this.battleNetClientOption.Value;
+            var token = await this.battlenetClient.AuthenticateByAccessTokenAsync("token").ConfigureAwait(false);
 
             var user = await this.battlenetClient.GetUser(token).ConfigureAwait(false);
             var players = await this.battlenetClient.GetPlayers(user.Id, token).ConfigureAwait(false);
