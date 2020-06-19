@@ -5,6 +5,12 @@ C# library to access Battlenet API.
 - Authentication
 - Starcraft 2
 
+# Install NuGet
+
+```xml
+<PackageReference Include="ASoft.BattleNet" Version="1.0.0.*" />
+```
+
 # Create BattleNetClient
 ```csharp
 var config = new ConfigurationBuilder()
